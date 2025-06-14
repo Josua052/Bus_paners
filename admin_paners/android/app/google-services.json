@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "611805920686",
+    "project_id": "app-bus-booking-paners",
+    "storage_bucket": "app-bus-booking-paners.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:611805920686:android:eac92cc24a356eb4f81c3f",
+        "android_client_info": {
+          "package_name": "com.admin.admin_paners"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDue0_L6sNTwJMBnO838rlKBC5AwoUpqqI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      } 
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:611805920686:android:d1a470d97200e7a3f81c3f",
+        "android_client_info": {
+          "package_name": "com.user.bus_booking"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDue0_L6sNTwJMBnO838rlKBC5AwoUpqqI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
