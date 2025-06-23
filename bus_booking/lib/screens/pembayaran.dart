@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter/services.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart'; 
+import 'package:firebase_auth/firebase_auth.dart'; 
 
 class PembayaranScreen extends StatefulWidget {
   final String asal;
@@ -53,26 +52,23 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-    );
+    // SystemChrome.setSystemUIOverlayStyle removed as per previous update.
+    // It will now follow the global settings from main.dart
   }
 
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
+        statusBarColor: Color(0xFF265AA5), // Background Status Bar BIRU GELAP
+        statusBarIconBrightness: Brightness.light, // Ikon Status Bar PUTIH
+        statusBarBrightness: Brightness.dark,      // Untuk iOS: teks putih
+
+        systemNavigationBarColor: Colors.white, // Background Navigation Bar PUTIH
+        systemNavigationBarIconBrightness: Brightness.dark, // Ikon Navigation Bar HITAM
       ),
     );
+
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       builder:
@@ -81,10 +77,14 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              leading: BackButton(color: Colors.white),
+              leading: const BackButton(color: Colors.white),
               title: const Text(
                 "Pembayaran",
                 style: TextStyle(color: Colors.white),
+              ),
+              systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
+                statusBarIconBrightness: Brightness.light,
+                statusBarBrightness: Brightness.dark,
               ),
             ),
             body: Padding(
@@ -169,145 +169,76 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
                     ),
                   ),
                   SizedBox(height: 30.h),
-                  Container(
-                    padding: EdgeInsets.all(16.w),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: Column(
-                      children: [
-                        RadioListTile<String>(
-                          title: const Text(
-                            "Cash on Delivery",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          value: 'COD',
-                          groupValue: metodePembayaran,
-                          onChanged:
-                              (value) =>
-                                  setState(() => metodePembayaran = value!),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        padding: EdgeInsets.all(16.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16.r),
                         ),
-                        RadioListTile<String>(
-                          title: const Text(
-                            "Transfer Bank",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          value: 'Transfer',
-                          groupValue: metodePembayaran,
-                          onChanged:
-                              (value) =>
-                                  setState(() => metodePembayaran = value!),
-                        ),
-                        if (metodePembayaran == 'Transfer')
-                          Padding(
-                            padding: EdgeInsets.only(top: 12.h),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Divider(),
-                                Text(
-                                  "Kode Pemesanan Anda:",
-                                  style: TextStyle(fontSize: 14.sp),
-                                ),
-                                SizedBox(height: 4.h),
-                                Text(
-                                  generateKodePemesanan(),
-                                  style: TextStyle(
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: const Color(0xFF265AA5),
-                                  ),
-                                ),
-                                SizedBox(height: 6.h),
-                                Text(
-                                  "Silakan transfer ke rekening BANK ABC 1234567890 Gunakan kode ini sebagai berita transfer.",
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                                SizedBox(height: 20.h),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      final kode = generateKodePemesanan();
-                                      final currentUser =
-                                          FirebaseAuth.instance.currentUser;
-                                      final data = {
-                                        'uid': currentUser?.uid ?? '',
-                                        'asal': widget.asal,
-                                        'tujuan': widget.tujuan,
-                                        'tanggal': widget.tanggal,
-                                        'jam': widget.jam,
-                                        'kelas': widget.kelas,
-                                        'nama': widget.nama,
-                                        'telepon': widget.telepon,
-                                        'jumlah_kursi': widget.jumlahKursi,
-                                        'kode_pemesanan': kode,
-                                        'metode_pembayaran': metodePembayaran,
-                                        'status': 'Menunggu Konfirmasi',
-                                        'kursi': widget.kursiDipilih.toList(),
-                                        'dipesan_pada': Timestamp.now(),
-                                        'total_pembayaran':
-                                            widget
-                                                .totalPembayaran, // opsional, ubah sesuai implementasi
-                                      };
-
-                                      await FirebaseFirestore.instance
-                                          .collection('pemesanan')
-                                          .add(data);
-
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            "Silahkan menunggu konfirmasi dari admin",
-                                          ),
-                                        ),
-                                      );
-
-                                      await Future.delayed(
-                                        Duration(seconds: 2),
-                                      );
-
-                                      Navigator.of(
-                                        context,
-                                      ).pushNamedAndRemoveUntil(
-                                        '/home',
-                                        (route) => false,
-                                      );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green,
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 14.h,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          12.r,
-                                        ),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      "Verifikasi Sekarang",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                        child: Column(
+                          children: [
+                            RadioListTile<String>(
+                              title: const Text(
+                                "Cash on Delivery",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              value: 'COD',
+                              groupValue: metodePembayaran,
+                              onChanged:
+                                  (value) =>
+                                      setState(() => metodePembayaran = value!),
                             ),
-                          ),
-                        if (metodePembayaran == 'COD')
-                          Padding(
-                            padding: EdgeInsets.only(top: 20.h),
-                            child: SizedBox(
+                            RadioListTile<String>(
+                              title: const Text(
+                                "Transfer Bank",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              value: 'Transfer',
+                              groupValue: metodePembayaran,
+                              onChanged:
+                                  (value) =>
+                                      setState(() => metodePembayaran = value!),
+                            ),
+                            // Start of updated code: Transfer details conditional display
+                            if (metodePembayaran == 'Transfer')
+                              Padding(
+                                padding: EdgeInsets.only(top: 12.h),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Divider(),
+                                    Text(
+                                      "Kode Pemesanan Anda:",
+                                      style: TextStyle(fontSize: 14.sp),
+                                    ),
+                                    SizedBox(height: 4.h),
+                                    Text(
+                                      generateKodePemesanan(),
+                                      style: TextStyle(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: const Color(0xFF265AA5),
+                                      ),
+                                    ),
+                                    SizedBox(height: 6.h),
+                                    Text(
+                                      "Silakan transfer ke rekening BANK ABC 1234567890 Gunakan kode ini sebagai berita transfer.",
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                    // Removed SizedBox(height: 20.h) here, as the button is now outside this block.
+                                  ],
+                                ),
+                              ),
+                            // End of updated code: Transfer details conditional display
+
+                            // Start of updated code: Confirmation button is now always visible
+                            SizedBox(height: metodePembayaran == 'Transfer' ? 20.h : 12.h), // Adjust spacing based on content above
+                            SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
                                 onPressed: () async {
@@ -320,6 +251,7 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
                                     'tujuan': widget.tujuan,
                                     'tanggal': widget.tanggal,
                                     'jam': widget.jam,
+                                    'kelas': widget.kelas,
                                     'nama': widget.nama,
                                     'telepon': widget.telepon,
                                     'jumlah_kursi': widget.jumlahKursi,
@@ -328,7 +260,8 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
                                     'status': 'Menunggu Konfirmasi',
                                     'kursi': widget.kursiDipilih.toList(),
                                     'dipesan_pada': Timestamp.now(),
-                                    'total_pembayaran': widget.totalPembayaran,
+                                    'total_pembayaran':
+                                        widget.totalPembayaran,
                                   };
 
                                   await FirebaseFirestore.instance
@@ -338,12 +271,14 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                        "Tunjukkan bukti pemesanan ke admin bus di terminal untuk verifikasi pembayaran",
+                                        metodePembayaran == 'COD'
+                                            ? "Tunjukkan bukti pemesanan ke admin bus di terminal untuk verifikasi pembayaran."
+                                            : "Pemesanan berhasil! Silakan lakukan transfer.",
                                       ),
                                     ),
                                   );
 
-                                  await Future.delayed(Duration(seconds: 2));
+                                  await Future.delayed(const Duration(seconds: 2));
 
                                   Navigator.of(context).pushNamedAndRemoveUntil(
                                     '/home',
@@ -358,7 +293,7 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
                                   ),
                                 ),
                                 child: Text(
-                                  "Konfirmasi",
+                                  "Konfirmasi Pemesanan", // Ubah teks tombol menjadi lebih jelas
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16.sp,
@@ -367,8 +302,10 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
                                 ),
                               ),
                             ),
-                          ),
-                      ],
+                            // End of updated code: Confirmation button is now always visible
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ],
