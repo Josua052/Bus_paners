@@ -39,6 +39,10 @@ dependencies:
   cloud_firestore: ^5.6.8
   image_picker: ^1.0.4
   firebase_storage: ^12.4.6
+  path_provider: ^2.0.11 # Tambahkan ini
+  csv: ^5.0.1 # Tambahkan ini
+  open_filex: ^4.3.2 # Tambahkan ini
+  permission_handler: ^11.0.1
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_test:
@@ -58,21 +62,22 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/logo_bus.png
-    - assets/images/stasiun.jpg
-    - assets/images/kucing.png
-    - assets/images/bg_app.jpg
-    - assets/images/logo_app.png
-    - assets/icons/google.png
-    - assets/icons/facebook.png
-    - assets/icons/apple-logo.png
-    - assets/icons/phone.png
-    - assets/icons/user.png
-    - assets/icons/ticket.png
-    - assets/images/not_file.png
-    - assets/images/identitas_logo.png
-    - assets/images/setir_mobil.png
-    - assets/images/penumpang_duduk.png
+    - assets/images/
+    - assets/icons/
+    # - assets/images/stasiun.jpg
+    # - assets/images/kucing.png
+    # - assets/images/bg_app.jpg
+    # - assets/images/logo_app.png
+    # - assets/icons/google.png
+    # - assets/icons/facebook.png
+    # - assets/icons/apple-logo.png
+    # - assets/icons/phone.png
+    # - assets/icons/user.png
+    # - assets/icons/ticket.png
+    # - assets/images/not_file.png
+    # - assets/images/identitas_logo.png
+    # - assets/images/setir_mobil.png
+    # - assets/images/penumpang_duduk.png
 
 flutter_icons:
   android: true

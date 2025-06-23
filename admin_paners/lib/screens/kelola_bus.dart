@@ -7,10 +7,45 @@ import 'kelola_penumpang.dart';
 import 'admin_home_screen.dart';
 import 'detail_bus.dart';
 import 'package:intl/intl.dart';
+import 'login_screen.dart';
+import 'pemesanan_manual_screen.dart';
 
 class KelolaBusScreen extends StatelessWidget {
   const KelolaBusScreen({super.key});
-
+  
+// Start of new code for Sign Out confirmation
+  Future<void> _confirmSignOut(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // User must tap a button to dismiss
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text('Konfirmasi Keluar', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+          content: Text('Apakah Anda yakin ingin keluar dari akun ini?', style: GoogleFonts.poppins()),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Tidak', style: GoogleFonts.poppins(color: Colors.red)),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Dismiss the dialog
+              },
+            ),
+            TextButton(
+              child: Text('Ya', style: GoogleFonts.poppins(color: Colors.green)),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Dismiss the dialog
+                // Navigate to LoginScreen and remove all previous routes
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (Route<dynamic> route) => false, // Remove all routes until false
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +79,23 @@ class KelolaBusScreen extends StatelessWidget {
                 context,
                 MaterialPageRoute(builder: (_) => KelolaPenumpangScreen()),
               );
+            }),
+            _drawerItem(context, Icons.receipt, 'Pemesanan Manual', () {
+              Navigator.pop(context); // Tutup drawer
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => PemesananManualScreen()),
+              );
+            }),
+            Divider(
+              thickness: 1,
+              indent: 16.w,
+              endIndent: 16.w,
+              color: Colors.grey[300],
+            ),
+            _drawerItem(context, Icons.logout, 'Sign Out', () {
+              Navigator.pop(context); // Close the drawer first
+              _confirmSignOut(context); // Then show the confirmation dialog
             }),
           ],
         ),
