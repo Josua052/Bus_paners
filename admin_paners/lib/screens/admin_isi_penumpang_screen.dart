@@ -106,7 +106,7 @@ class _AdminIsiPenumpangScreenState extends State<AdminIsiPenumpangScreen> {
         'total_pembayaran': widget.hargaTiketPerKursi * widget.selectedSeats.length,
         'kode_pemesanan': kodePemesanan,
         'metode_pembayaran': metodePembayaran,
-        'status': metodePembayaran == 'COD' ? 'Menunggu Konfirmasi' : 'Terverifikasi',
+        'status': 'Terverifikasi',
         'dipesan_pada': FieldValue.serverTimestamp(),
       };
 
